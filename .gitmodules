@@ -1,0 +1,7 @@
+[submodule "products/product-cf-cpi"]
+	path = products/product-cf-cpi
+	url = https://github.tools.sap/INTAAS/product-cf-cpi.git
+	branch = master
+[submodule "bic/bic-product-dev"]
+	path = bic/bic-product-dev
+	url = https://github.tools.sap/BIC/bic-product-dev.git
