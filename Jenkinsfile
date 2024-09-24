@@ -43,7 +43,7 @@ pipeline {
                             def changes = bat(script: 'git status --porcelain', returnStdout: true).trim()
                             if (changes) {
                                 bat 'git add .'
-                                bat "git commit -m 'Update YAML files based on environment variables'"
+                                bat 'git commit -m "Update YAML files based on environment variables"'
                                 bat "git push https://${GITHUB_USERNAME}:${GITHUB_PAT}@${DEST_REPO_URL} main"
                             } else {
                                 echo 'No changes to commit.'
