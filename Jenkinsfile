@@ -32,26 +32,27 @@ pipeline {
         }
 
         stage('Push Changes') {
-    steps {
-        script {
-            dir("${env.WORKSPACE}\\Clone_Repo\\Demo1-Folder") {
-                withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PAT')]) {
-                    bat "git config user.name '${GITHUB_USERNAME}'"
-                    bat "git config user.email 'your.email@example.com'" 
+            steps {
+                script {
+                    dir("${env.WORKSPACE}\\Clone_Repo\\Demo1-Folder") {
+                        withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PAT')]) {
+                            bat "git config user.name '${GITHUB_USERNAME}'"
+                            bat "git config user.email 'your.email@example.com'" 
 
-                    def changes = bat(script: 'git status --porcelain', returnStdout: true).trim()
-                    if (changes) {
-                        bat 'git add .'
-                        bat "git commit -m 'Update YAML files based on environment variables'"
-                        bat "git push https://${GITHUB_USERNAME}:${GITHUB_PAT}@${DEST_REPO_URL} main"
-                    } else {
-                        echo 'No changes to commit.'
+                            def changes = bat(script: 'git status --porcelain', returnStdout: true).trim()
+                            if (changes) {
+                                bat 'git add .'
+                                bat "git commit -m 'Update YAML files based on environment variables'"
+                                bat "git push https://${GITHUB_USERNAME}:${GITHUB_PAT}@${DEST_REPO_URL} main"
+                            } else {
+                                echo 'No changes to commit.'
+                            }
+                        }
                     }
                 }
             }
         }
     }
-}
 
     post {
         always {
