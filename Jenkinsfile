@@ -39,7 +39,7 @@ pipeline {
                     dir("${env.WORKSPACE}\\Clone_Repo\\Demo1-Folder") {
                         withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PAT')]) {
                             bat "git config user.name '${env.GITHUB_USERNAME}'"
-                            bat "git config user.email 'your.email@example.com'" 
+                            bat "git config user.email 'bvenkateshreddy87@gmail.com'" 
 
                             def changes = bat(script: 'git status --porcelain', returnStdout: true).trim()
                             if (changes) {
