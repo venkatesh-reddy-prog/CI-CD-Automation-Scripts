@@ -15,7 +15,7 @@ pipeline {
             steps {
                 script {
                     // Fetch GitHub credentials inside the script block
-                    def githubCredentials = credentials('github-credentials')
+                    def githubCredentials = usernamePassword(credentialsId: 'github-credentials')
                     env.GITHUB_USERNAME = githubCredentials.username
                     env.GITHUB_PAT = githubCredentials.password
 
