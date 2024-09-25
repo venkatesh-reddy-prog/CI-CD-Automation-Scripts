@@ -3,7 +3,7 @@ pipeline {
 
     parameters {
         string(name: 'dest_repo_url', defaultValue: 'https://github.com/venkatesh-reddy-prog/Demo1-Folder', description: 'Destination repository URL')
-        string(name: 'updates', defaultValue: 'tokenurl=Nithin', description: 'key=value format')
+        string(name: 'updates_str', defaultValue: 'tokenurl=Nithin', description: 'key=value format')
     }
 
     environment {
@@ -35,7 +35,7 @@ pipeline {
             steps {
                 script {
                     bat """
-                        set UPDATES=${params.updates}
+                        set UPDATES=${params.updates_str}
                         python update_yaml.py
                     """
                 }
