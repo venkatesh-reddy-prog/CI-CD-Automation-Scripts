@@ -19,9 +19,9 @@ if __name__ == "__main__":
     source_repo_url = "https://github.com/venkatesh-reddy-prog/Template_Repo"
     source_clone_dir = os.path.expanduser("~/Clone_Repo/Template_Repo")
     
-    dest_repo_url = os.environ.get("DEST_REPO_URL")
-    pat = os.environ.get("GITHUB_PAT")
-    username = os.environ.get("GITHUB_USERNAME")
+    dest_repo_url = os.getenv("DEST_REPO_URL")
+    pat = os.getenv("GITHUB_PAT")
+    username = os.getenv("GITHUB_USERNAME")
 
     if not dest_repo_url or not pat or not username:
         print("Initialize DEST_REPO_URL, GITHUB_PAT, and GITHUB_USERNAME.")
