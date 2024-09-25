@@ -1,13 +1,8 @@
 pipeline {
     agent any
 
-    parameters {
-        string(name: 'UPDATES', defaultValue: '', description: 'Pass environment variables in key=value format, separated by commas (e.g., key1=value1,key2=value2)')
-        string(name: 'DEST_REPO_URL', defaultValue: '', description: 'Destination repository URL')
-    }
-
     environment {
-        GITHUB_USERNAME = credentails('github-username')
+        GITHUB_USERNAME = credentials('github-credentials') 
         GITHUB_PAT = credentials('github-pat')
     }
 
@@ -24,7 +19,7 @@ pipeline {
                     bat """
                         set GITHUB_USERNAME=${env.GITHUB_USERNAME}
                         set GITHUB_PAT=${env.GITHUB_PAT}
-                        set DEST_REPO_URL=${params.DEST_REPO_URL}
+                        set DEST_REPO_URL=https://github.com/venkatesh-reddy-prog/Demo1-Folder
                         python clone_repo.py
                     """
                 }
@@ -34,7 +29,7 @@ pipeline {
         stage('Update YAML Files') {
             steps {
                 script {
-                    bat "set UPDATES=${params.UPDATES} && python update_yaml.py"
+                    bat "set UPDATES=tokenurl=Meghana && python update_yaml.py"
                 }
             }
         }
@@ -59,7 +54,9 @@ pipeline {
 
     post {
         always {
-            cleanWs() 
+            node {
+                cleanWs() 
+            }
         }
         failure {
             echo "Build failed!"
