@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        GITHUB_USERNAME = credentials('github-credentials') 
+        GITHUB_USERNAME = credentials('github-username') 
         GITHUB_PAT = credentials('github-pat')
     }
 
