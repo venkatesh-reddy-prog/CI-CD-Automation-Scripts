@@ -10,7 +10,7 @@ pipeline {
         // Fetch GitHub username and PAT using 'github-credentials'
         GITHUB_CREDENTIALS = credentials('github-credentials')
         GITHUB_USERNAME = credentails('github-username')
-        GITHUB_PAT = credentials('github-pat)
+        GITHUB_PAT = credentials('github-pat')
     }
 
     stages {
