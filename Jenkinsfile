@@ -7,8 +7,6 @@ pipeline {
     }
 
     environment {
-        // Fetch GitHub username and PAT using 'github-credentials'
-        GITHUB_CREDENTIALS = credentials('github-credentials')
         GITHUB_USERNAME = credentails('github-username')
         GITHUB_PAT = credentials('github-pat')
     }
@@ -16,7 +14,6 @@ pipeline {
     stages {
         stage('Checkout Source Code') {
             steps {
-                // Cloning the Jenkins workspace to ensure the Python scripts are available
                 checkout scm
             }
         }
