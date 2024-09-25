@@ -7,8 +7,10 @@ pipeline {
     }
 
     environment {
-        // Use Jenkins' `usernamePassword` credentials to store both GitHub username and PAT
-        GITHUB_CREDENTIALS = credentials('github-credentials') // This will store both username and password
+        // Fetch GitHub username and PAT using 'github-credentials'
+        GITHUB_CREDENTIALS = credentials('github-credentials')
+        GITHUB_USERNAME = credentails('github-username)
+        GITHUB_PAT = credentials('github-pat)
     }
 
     stages {
@@ -22,10 +24,9 @@ pipeline {
         stage('Clone Repositories') {
             steps {
                 script {
-                    // Pass the GitHub credentials (username and PAT) and DEST_REPO_URL to the clone_repo.py script
                     bat """
-                        set GITHUB_USERNAME=${env.GITHUB_CREDENTIALS_USR}
-                        set GITHUB_PAT=${env.GITHUB_CREDENTIALS_PSW}
+                        set GITHUB_USERNAME=${env.GITHUB_USERNAME}
+                        set GITHUB_PAT=${env.GITHUB_PAT}
                         set DEST_REPO_URL=${params.DEST_REPO_URL}
                         python clone_repo.py
                     """
@@ -36,7 +37,6 @@ pipeline {
         stage('Update YAML Files') {
             steps {
                 script {
-                    // Pass the UPDATES parameter to the update_yaml.py script
                     bat "set UPDATES=${params.UPDATES} && python update_yaml.py"
                 }
             }
@@ -46,12 +46,12 @@ pipeline {
             steps {
                 script {
                     dir("${env.WORKSPACE}\\Clone_Repo\\Demo1-Folder") {
-                        // Configure Git credentials and commit changes on Windows
                         bat """
                         git config user.email "bvenkateshreddy87@gmail.com"
                         git config user.name "venkatesh-reddy-prog"
+                        git checkout -b main || git checkout main
                         git add .
-                        git commit -m "Automated YAML updates"
+                        git commit -m "Automated YAML updates" || echo "Nothing to commit"
                         git push origin main
                         """
                     }
@@ -62,11 +62,9 @@ pipeline {
 
     post {
         always {
-            // Clean up the workspace after the job execution
-            bat 'rmdir /S /Q %WORKSPACE%' // Clean workspace on Windows
+            cleanWs() 
         }
         failure {
-            // Notify in case of failure
             echo "Build failed!"
         }
     }
