@@ -1,23 +1,34 @@
 pipeline {
     agent any
+
     parameters {
-        string(name: 'UPDATES', defaultValue: ' ', description: 'Update values for YAML files')
+        string(name: 'UPDATES', defaultValue: '', description: 'Pass environment variables in key=value format, separated by commas (e.g., key1=value1,key2=value2)')
+        string(name: 'DEST_REPO_URL', defaultValue: '', description: 'Destination repository URL')
     }
 
     environment {
-        DEST_REPO_URL = credentials('dest-repo-url')
-        PYTHON_PATH = 'C:\\Users\\I751676\\AppData\\Local\\Programs\\Python\\Python312\\python.exe'
+        // Use Jenkins' `usernamePassword` credentials to store both GitHub username and PAT
+        GITHUB_CREDENTIALS = credentials('github-credentials') // This will store both username and password
     }
 
     stages {
+        stage('Checkout Source Code') {
+            steps {
+                // Cloning the Jenkins workspace to ensure the Python scripts are available
+                checkout scm
+            }
+        }
+
         stage('Clone Repositories') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PAT')]) {
-                        env.GITHUB_USERNAME = GITHUB_USERNAME
-                        env.GITHUB_PAT = GITHUB_PAT
-                        bat "${env.PYTHON_PATH} clone_repo.py"
-                    }
+                    // Pass the GitHub credentials (username and PAT) and DEST_REPO_URL to the clone_repo.py script
+                    bat """
+                        set GITHUB_USERNAME=${env.GITHUB_CREDENTIALS_USR}
+                        set GITHUB_PAT=${env.GITHUB_CREDENTIALS_PSW}
+                        set DEST_REPO_URL=${params.DEST_REPO_URL}
+                        python clone_repo.py
+                    """
                 }
             }
         }
@@ -25,8 +36,8 @@ pipeline {
         stage('Update YAML Files') {
             steps {
                 script {
-                    env.UPDATES = "${params.UPDATES}"
-                    bat "${env.PYTHON_PATH} update_yaml.py"
+                    // Pass the UPDATES parameter to the update_yaml.py script
+                    bat "set UPDATES=${params.UPDATES} && python update_yaml.py"
                 }
             }
         }
@@ -35,27 +46,14 @@ pipeline {
             steps {
                 script {
                     dir("${env.WORKSPACE}\\Clone_Repo\\Demo1-Folder") {
-                        withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PAT')]) {
-                            bat "git config user.name ${GITHUB_USERNAME}"
-                            bat "git config user.email 'bvenkateshreddy87@gmail.com'"
-
-                            // Checkout the correct branch
-                            bat "git checkout main"
-
-                            // Print untracked files for debugging
-                            def untrackedFiles = bat(script: 'git ls-files --others --exclude-standard', returnStdout: true).trim()
-                            echo "Untracked files: ${untrackedFiles}"
-
-                            // Check for changes
-                            def changes = bat(script: 'git status --porcelain', returnStdout: true).trim()
-                            if (changes) {
-                                bat 'git add .'
-                                bat 'git commit -m "Update YAML files based on environment variables"'
-                                bat "git push https://${GITHUB_USERNAME}:${GITHUB_PAT}@${DEST_REPO_URL} main"
-                            } else {
-                                echo 'No changes to commit.'
-                            }
-                        }
+                        // Configure Git credentials and commit changes on Windows
+                        bat """
+                        git config user.email "jenkins@example.com"
+                        git config user.name "Jenkins"
+                        git add .
+                        git commit -m "Automated YAML updates"
+                        git push origin main
+                        """
                     }
                 }
             }
@@ -64,7 +62,12 @@ pipeline {
 
     post {
         always {
-            cleanWs()
+            // Clean up the workspace after the job execution
+            bat 'rmdir /S /Q %WORKSPACE%' // Clean workspace on Windows
+        }
+        failure {
+            // Notify in case of failure
+            echo "Build failed!"
         }
     }
 }
