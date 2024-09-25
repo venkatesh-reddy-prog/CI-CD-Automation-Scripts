@@ -24,7 +24,7 @@ if __name__ == "__main__":
     username = os.environ.get("GITHUB_USERNAME")
 
     if not dest_repo_url or not pat or not username:
-        print("Please set the environment variables DEST_REPO_URL, GITHUB_PAT, and GITHUB_USERNAME.")
+        print("Initialize DEST_REPO_URL, GITHUB_PAT, and GITHUB_USERNAME.")
         exit(1)
 
     dest_clone_dir = os.path.expanduser("~/Clone_Repo/Demo1-Folder")
