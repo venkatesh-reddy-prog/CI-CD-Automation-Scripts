@@ -1,8 +1,7 @@
 pipeline {
     agent any
-
     parameters {
-        string(name: 'UPDATES', defaultValue: '', description: 'Update values for YAML files')
+        string(name: 'UPDATES', defaultValue: ' ', description: 'Update values for YAML files')
     }
 
     environment {
@@ -39,6 +38,7 @@ pipeline {
                         withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PAT')]) {
                             bat "git config user.name ${GITHUB_USERNAME}"
                             bat "git config user.email 'bvenkateshreddy87@gmail.com'" 
+                            bat "git checkout main"
 
                             def changes = bat(script: 'git status --porcelain', returnStdout: true).trim()
                             if (changes) {
