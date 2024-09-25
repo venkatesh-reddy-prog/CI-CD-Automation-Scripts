@@ -48,8 +48,8 @@ pipeline {
                     dir("${env.WORKSPACE}\\Clone_Repo\\Demo1-Folder") {
                         // Configure Git credentials and commit changes on Windows
                         bat """
-                        git config user.email "jenkins@example.com"
-                        git config user.name "Jenkins"
+                        git config user.email "bvenkateshreddy87@gmail.com"
+                        git config user.name "venkatesh-reddy-prog"
                         git add .
                         git commit -m "Automated YAML updates"
                         git push origin main
