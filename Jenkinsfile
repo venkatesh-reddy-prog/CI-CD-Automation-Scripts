@@ -30,30 +30,35 @@ pipeline {
                 }
             }
         }
-
         stage('Push Changes') {
-            steps {
-                script {
-                    dir("${env.WORKSPACE}\\Clone_Repo\\Demo1-Folder") {
-                        withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PAT')]) {
-                            bat "git config user.name ${GITHUB_USERNAME}"
-                            bat "git config user.email 'bvenkateshreddy87@gmail.com'" 
-                            bat "git checkout main"
+    steps {
+        script {
+            dir("${env.WORKSPACE}\\Clone_Repo\\Demo1-Folder") {
+                withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PAT')]) {
+                    bat "git config user.name ${GITHUB_USERNAME}"
+                    bat "git config user.email 'bvenkateshreddy87@gmail.com'"
 
-                            def changes = bat(script: 'git status --porcelain', returnStdout: true).trim()
-                            if (changes) {
-                                bat 'git add .'
-                                bat 'git commit -m "Update YAML files based on environment variables"'
-                                bat "git push https://${GITHUB_USERNAME}:${GITHUB_PAT}@${DEST_REPO_URL} main"
-                            } else {
-                                echo 'No changes to commit.'
-                            }
-                        }
+                    // Ensure we're on the correct branch
+                    bat "git checkout main"  // Make sure to check if this line is needed
+
+                    // Print untracked files for debugging
+                    def untrackedFiles = bat(script: 'git ls-files --others --exclude-standard', returnStdout: true).trim()
+                    echo "Untracked files: ${untrackedFiles}"
+
+                    // Add changes
+                    def changes = bat(script: 'git status --porcelain', returnStdout: true).trim()
+                    if (changes) {
+                        bat 'git add .'
+                        bat 'git commit -m "Update YAML files based on environment variables"'
+                        bat "git push https://${GITHUB_USERNAME}:${GITHUB_PAT}@${DEST_REPO_URL} main"
+                    } else {
+                        echo 'No changes to commit.'
                     }
                 }
             }
         }
     }
+}
 
     post {
         always {
