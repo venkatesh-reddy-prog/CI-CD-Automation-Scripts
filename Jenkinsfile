@@ -54,9 +54,7 @@ pipeline {
 
     post {
         always {
-            node {
-                cleanWs() 
-            }
+            cleanWs()  // No need for 'node' block here
         }
         failure {
             echo "Build failed!"
