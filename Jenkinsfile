@@ -1,25 +1,24 @@
 pipeline {
     agent any
 
+    parameters {
+        string(name: 'dest_repo_url', defaultValue: 'https://github.com/venkatesh-reddy-prog/Demo1-Folder', description: 'Destination repository URL')
+        string(name: 'updates_scr', defaultValue: 'tokenurl=Nithin', description: 'key=value format')
+    }
+
     environment {
         GITHUB_USERNAME = credentials('github-username') 
         GITHUB_PAT = credentials('github-pat')
     }
 
     stages {
-        stage('Checkout Source Code') {
-            steps {
-                checkout scm
-            }
-        }
-
         stage('Clone Repositories') {
             steps {
                 script {
                     bat """
                         set GITHUB_USERNAME=${env.GITHUB_USERNAME}
                         set GITHUB_PAT=${env.GITHUB_PAT}
-                        set DEST_REPO_URL=https://github.com/venkatesh-reddy-prog/Demo1-Folder
+                        set DEST_REPO_URL=${params.dest_repo_url}
                         python clone_repo.py
                     """
                 }
@@ -29,7 +28,10 @@ pipeline {
         stage('Update YAML Files') {
             steps {
                 script {
-                    bat "set UPDATES=tokenurl=Meghana && python update_yaml.py"
+                    bat """
+                        set UPDATES=${params.updates_scr}
+                        python update_yaml.py
+                    """
                 }
             }
         }
@@ -49,15 +51,6 @@ pipeline {
                     }
                 }
             }
-        }
-    }
-
-    post {
-        always {
-            cleanWs()  // No need for 'node' block here
-        }
-        failure {
-            echo "Build failed!"
         }
     }
 }
