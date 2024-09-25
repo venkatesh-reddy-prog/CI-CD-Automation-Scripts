@@ -60,7 +60,6 @@ if __name__ == "__main__":
     updates_str = os.getenv('UPDATES')
     env_dict = parse_env_variable_string(updates_str)
     
-    # Use user-specific paths
     source_clone_dir = os.path.expanduser("~/Clone_Repo/Template_Repo")
     dest_clone_dir = os.path.expanduser("~/Clone_Repo/Demo1-Folder")
     
