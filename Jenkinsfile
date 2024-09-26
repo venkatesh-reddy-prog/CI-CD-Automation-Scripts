@@ -51,7 +51,7 @@ pipeline {
                     dir("${env.WORKSPACE}\\Clone_Repo\\Demo1-Folder") {
                         bat '''
                         git remote set-url origin https://%GITHUB_USERNAME%:%GITHUB_PAT%@%DEST_REPO_URL%
-                        git push origin main // Change 'main' to your target branch if necessary
+                        git push origin main
                         '''
                     }
                 }
