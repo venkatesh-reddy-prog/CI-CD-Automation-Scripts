@@ -17,7 +17,7 @@ def replace_modify_values(yaml_data, env_dict):
             if isinstance(value, dict) or isinstance(value, list):
                 if replace_modify_values(value, env_dict):
                     modified = True
-            elif isinstance(value, str) and "changepath" in value:
+            elif isinstance(value, str) and "Modify" in value:
                 env_value = env_dict.get(key)
                 if env_value:
                     yaml_data[key] = value.replace("Modify", env_value)
