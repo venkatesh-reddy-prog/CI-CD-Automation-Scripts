@@ -1,17 +1,14 @@
 pipeline {
     agent any
-
     parameters {
         string(name: 'DEST_REPO_URL', defaultValue: 'github.com/venkatesh-reddy-prog/Demo1-Folder', description: 'Destination Repository URL (e.g., github.com/username/repo.git)')
         string(name: 'UPDATES', defaultValue: '', description: 'Updates as key=value pairs (comma-separated)')
     }
-
     environment {
         GITHUB_PAT = credentials('github-pat') 
         GITHUB_USERNAME = 'venkatesh-reddy-prog' 
         GITHUB_EMAIL = 'bvenkateshreddy87@gmail.com' 
     }
-
     stages {
         stage('Clone Repositories') {
             steps {
@@ -20,7 +17,6 @@ pipeline {
                 }
             }
         }
-
         stage('Update YAML Files') {
             steps {
                 script {
@@ -29,7 +25,6 @@ pipeline {
                 }
             }
         }
-
         stage('Commit Changes') {
             steps {
                 script {
@@ -44,7 +39,6 @@ pipeline {
                 }
             }
         }
-
         stage('Push Changes') {
             steps {
                 script {
