@@ -9,7 +9,7 @@ def clone_repositories(source_repo_url, dest_repo_url, source_clone_dir, dest_cl
         print("Source repository already exists. Skipping clone.")
 
     if not os.path.exists(dest_clone_dir):
-        dest_repo_url_with_auth = dest_repo_url.replace("https://", f"https://{username}:{pat}@")
+        dest_repo_url_with_auth = f"https://{GITHUB_USERNAME}:{GITHUB_PAT}@{DEST_REPO_URL}"
         git.Repo.clone_from(dest_repo_url_with_auth, dest_clone_dir)
         print("Destination repository cloned.")
     else:
