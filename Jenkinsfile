@@ -20,13 +20,13 @@ pipeline {
 
         stage('Clone Repositories') {
             steps {
-                script {
-                    bat """
-                        set GITHUB_USERNAME=${env.GITHUB_USERNAME}
-                        set GITHUB_PAT=${env.GITHUB_PAT}
-                        set DEST_REPO_URL=${params.dest_repo_url}
-                        python clone_repo.py
-                    """
+                withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PAT')]) {
+                    script {
+                        bat """
+                            set DEST_REPO_URL=${params.dest_repo_url}
+                            python clone_repo.py
+                        """
+                    }
                 }
             }
         }
