@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     parameters {
-        string(name: 'DEST_REPO_URL', defaultValue: '', description: 'Destination Repository URL (e.g., github.com/username/repo.git)')
+        string(name: 'DEST_REPO_URL', defaultValue: 'github.com/venkatesh-reddy-prog/Demo1-Folder', description: 'Destination Repository URL (e.g., github.com/username/repo.git)')
         string(name: 'UPDATES', defaultValue: '', description: 'Updates as key=value pairs (comma-separated)')
     }
 
@@ -50,7 +50,6 @@ pipeline {
                 script {
                     dir("${env.WORKSPACE}\\Clone_Repo\\Demo1-Folder") {
                         echo "Destination Repository URL: ${params.DEST_REPO_URL}" 
-                        echo "Setting remote URL: https://%GITHUB_USERNAME%:%GITHUB_PAT%@%DEST_REPO_URL%"
                         bat '''
                         git remote set-url origin https://%GITHUB_USERNAME%:%GITHUB_PAT%@%DEST_REPO_URL%
                         git push origin main
@@ -58,15 +57,6 @@ pipeline {
                     }
                 }
             }
-        }
-    }
-
-    post {
-        success {
-            echo 'Pipeline completed successfully.'
-        }
-        failure {
-            echo 'Pipeline failed.'
         }
     }
 }
