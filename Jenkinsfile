@@ -49,6 +49,7 @@ pipeline {
             steps {
                 script {
                     dir("${env.WORKSPACE}\\Clone_Repo\\Demo1-Folder") {
+                        echo "Destination Repository URL: ${params.DEST_REPO_URL}" 
                         bat '''
                         git remote set-url origin https://github.com/%GITHUB_USERNAME%:%GITHUB_PAT%@${params.DEST_REPO_URL}
                         git push origin main
