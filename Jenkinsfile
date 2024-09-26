@@ -59,13 +59,4 @@ pipeline {
             }
         }
     }
-
-    post {
-        always {
-            cleanWs()  
-        }
-        failure {
-            echo "Build failed!"
-        }
-    }
 }
