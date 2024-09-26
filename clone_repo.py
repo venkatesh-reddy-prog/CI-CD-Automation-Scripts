@@ -9,7 +9,7 @@ def clone_repositories(source_repo_url, dest_repo_url, source_clone_dir, dest_cl
         print("Source repository already exists. Skipping clone.")
 
     if not os.path.exists(dest_clone_dir):
-        dest_repo_url_with_auth = f"https://{GITHUB_USERNAME}:{GITHUB_PAT}@{DEST_REPO_URL}"
+        dest_repo_url_with_auth = dest_repo_url.replace("https://", f"https://{username}:{pat}@")
         git.Repo.clone_from(dest_repo_url_with_auth, dest_clone_dir)
         print("Destination repository cloned.")
     else:
@@ -19,7 +19,7 @@ if __name__ == "__main__":
     source_repo_url = "https://github.com/venkatesh-reddy-prog/Template_Repo"
     source_clone_dir = os.path.expanduser("./Clone_Repo/Template_Repo")
     
-    dest_repo_url = os.environ.get("DEST_REPO_URL")
+    dest_repo_url = "https://" + os.environ.get("DEST_REPO_URL", "")
     pat = os.environ.get("GITHUB_PAT")
     username = os.environ.get("GITHUB_USERNAME")
 
