@@ -45,16 +45,14 @@ pipeline {
         stage('Push Changes') {
             steps {
                 script {
-                    dir("${env.WORKSPACE}\\Clone_Repo\\Demo1-Folder") {
-                        bat """
-                        git config user.email "bvenkateshreddy87@gmail.com"
-                        git config user.name "venkatesh-reddy-prog"
-                        git checkout -b main || git checkout main
+                    bat """
+                        git config --global user.email "bvenkateshreddy87@gmail.com"
+                        git config --global user.name "venkatesh-reddy-prog"
+                        git checkout main || git checkout -b main
                         git add .
                         git commit -m "Automated YAML updates" || echo "Nothing to commit"
                         git push origin main
-                        """
-                    }
+                    """
                 }
             }
         }
