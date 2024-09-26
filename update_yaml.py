@@ -17,11 +17,11 @@ def replace_modify_values(yaml_data, env_dict):
             if isinstance(value, dict) or isinstance(value, list):
                 if replace_modify_values(value, env_dict):
                     modified = True
-            elif isinstance(value, str) and "Modify" in value:
+            elif isinstance(value, str) and "changepath" in value:
                 env_value = env_dict.get(key)
                 if env_value:
                     yaml_data[key] = value.replace("Modify", env_value)
-                    modified = True
+                    modified = True    
     elif isinstance(yaml_data, list):
         for item in yaml_data:
             if replace_modify_values(item, env_dict):
@@ -33,16 +33,13 @@ def modify_yaml_file(src_file_path, dest_file_path, env_dict):
         with open(src_file_path, 'r') as file:
             yaml_documents = list(yaml.safe_load_all(file))
         
-        modified = False
         for yaml_data in yaml_documents:
             if replace_modify_values(yaml_data, env_dict):
-                modified = True
+                print(f"Modified file: {dest_file_path}")
 
-        if modified:
-            os.makedirs(os.path.dirname(dest_file_path), exist_ok=True)
-            with open(dest_file_path, 'w') as file:
-                yaml.dump_all(yaml_documents, file)
-            print(f"Modified file saved to: {dest_file_path}")
+        os.makedirs(os.path.dirname(dest_file_path), exist_ok=True)
+        with open(dest_file_path, 'w') as file:
+            yaml.dump_all(yaml_documents, file)
         return 0
     except Exception as e:
         print(f"Error processing file {src_file_path}: {e}")
@@ -60,8 +57,9 @@ if __name__ == "__main__":
     updates_str = os.getenv('UPDATES')
     env_dict = parse_env_variable_string(updates_str)
     
-    source_clone_dir = os.path.expanduser("~/Clone_Repo/Template_Repo")
-    dest_clone_dir = os.path.expanduser("~/Clone_Repo/Demo1-Folder")
+    # Use user-specific paths
+    source_clone_dir = os.path.expanduser("./Clone_Repo/Template_Repo")
+    dest_clone_dir = os.path.expanduser("./Clone_Repo/Demo1-Folder")
     
     process_yaml_files_in_directory(source_clone_dir, dest_clone_dir, env_dict)
 
