@@ -2,31 +2,21 @@ pipeline {
     agent any
 
     parameters {
-        string(name: 'dest_repo_url', defaultValue: 'https://github.com/venkatesh-reddy-prog/Demo1-Folder', description: 'Destination repository URL')
-        string(name: 'updates_str', defaultValue: 'tokenurl=Nithin', description: 'key=value format')
+        string(name: 'DEST_REPO_URL', defaultValue: '', description: 'Destination Repository URL')
+        string(name: 'UPDATES', defaultValue: '', description: 'Updates as key=value pairs (comma-separated)')
     }
 
     environment {
-        GITHUB_USERNAME = credentials('github-username') 
-        GITHUB_PAT = credentials('github-pat')
+        GITHUB_PAT = credentials('github-pat') 
+        GITHUB_USERNAME = 'venkatesh-reddy-prog' 
+        GITHUB_EMAIL = 'bvenkateshreddy87@gmail.com' 
     }
 
     stages {
-        stage('Checkout Source Code') {
-            steps {
-                checkout scm
-            }
-        }
-
         stage('Clone Repositories') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PAT')]) {
-                    script {
-                        bat """
-                            set DEST_REPO_URL=${params.dest_repo_url}
-                            python clone_repo.py
-                        """
-                    }
+                script {
+                    bat 'python clone_repo.py'
                 }
             }
         }
@@ -34,10 +24,23 @@ pipeline {
         stage('Update YAML Files') {
             steps {
                 script {
-                    bat """
-                        set UPDATES=${params.updates_str}
-                        python update_yaml.py
-                    """
+                    env.UPDATES = params.UPDATES
+                    bat 'python update_yaml.py'
+                }
+            }
+        }
+
+        stage('Commit Changes') {
+            steps {
+                script {
+                    dir("${env.WORKSPACE}\\Clone_Repo\\Demo1-Folder") {
+                        bat '''
+                        git config user.name "%GITHUB_USERNAME%"
+                        git config user.email "%GITHUB_EMAIL%"
+                        git add .
+                        git commit -m "Update YAML files with modifications"
+                        '''
+                    }
                 }
             }
         }
@@ -45,15 +48,12 @@ pipeline {
         stage('Push Changes') {
             steps {
                 script {
-                    bat """
-                        git config --global user.email "bvenkateshreddy87@gmail.com"
-                        git config --global user.name "venkatesh-reddy-prog"
-                        git checkout main || git checkout -b main
-                        git pull origin main --rebase || echo "No changes to pull"
-                        git add .
-                        git commit -m "Automated YAML updates" || echo "Nothing to commit"
-                        git push origin main
-                    """
+                    dir("${env.WORKSPACE}\\Clone_Repo\\Demo1-Folder") {
+                        bat '''
+                        git remote set-url origin https://%GITHUB_USERNAME%:%GITHUB_PAT%@%DEST_REPO_URL%
+                        git push origin main // Change 'main' to your target branch if necessary
+                        '''
+                    }
                 }
             }
         }
