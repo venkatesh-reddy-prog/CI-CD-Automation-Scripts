@@ -38,7 +38,7 @@ pipeline {
                         git config user.name "%GITHUB_USERNAME%"
                         git config user.email "%GITHUB_EMAIL%"
                         git add .
-                        git commit -m "Update YAML files with modifications"
+                        git diff --cached --quiet || git commit -m "Update YAML files with modifications"
                         '''
                     }
                 }
@@ -50,7 +50,7 @@ pipeline {
                 script {
                     dir("${env.WORKSPACE}\\Clone_Repo\\Demo1-Folder") {
                         bat '''
-                        git remote set-url origin https://%GITHUB_USERNAME%:%GITHUB_PAT%@%DEST_REPO_URL%
+                        git remote set-url origin https://%GITHUB_USERNAME%:%GITHUB_PAT%@${params.DEST_REPO_URL}
                         git push origin main
                         '''
                     }
