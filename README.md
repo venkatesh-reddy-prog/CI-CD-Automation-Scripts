@@ -6,13 +6,13 @@ This repository serves as a practical demonstration and collection of scripts fo
 
 This project provides working examples for key automation tasks:
 
-### Repository Cloning Automation: A Python script (clone_repo.py) for programmatically cloning Git repositories.
+Repository Cloning Automation: A Python script (clone_repo.py) for programmatically cloning Git repositories.
 
-### YAML Configuration Management: A Python utility (update_yaml.py) for dynamically reading, modifying, and writing back YAML configuration files.
+YAML Configuration Management: A Python utility (update_yaml.py) for dynamically reading, modifying, and writing back YAML configuration files.
 
-### Jenkins Pipeline Integration: A ready-to-use Jenkinsfile demonstrating how to integrate these scripts into a declarative CI/CD pipeline.
+Jenkins Pipeline Integration: A ready-to-use Jenkinsfile demonstrating how to integrate these scripts into a declarative CI/CD pipeline.
 
-### DevOps Workflow Practice: Provides a testing ground for practicing common Git, Python scripting, and CI/CD concepts.
+DevOps Workflow Practice: Provides a testing ground for practicing common Git, Python scripting, and CI/CD concepts.
 
 ## 🚀 Getting Started
 
@@ -36,7 +36,7 @@ git clone https://github.com/venkatesh-reddy-prog/demo.git
 
 cd demo
 
-### Install Dependencies:
+#### Install Dependencies:
 
 Bash
 
